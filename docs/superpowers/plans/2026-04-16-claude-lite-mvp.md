@@ -6,7 +6,13 @@
 
 **Architecture:** Next.js 15 App Router full-stack app. `/api/chat` streams via Vercel AI SDK and auto-creates the conversation on first message (UUID generated client-side). SQLite via Drizzle ORM persists all data to `/data/app.db`. JWT cookie protects all routes except `/login`.
 
-**Tech Stack:** Next.js 15, Vercel AI SDK (`ai` + `@ai-sdk/anthropic`), Drizzle ORM + better-sqlite3, Tailwind CSS + shadcn/ui, react-markdown + remark-gfm + shiki, jose (JWT), bcryptjs, Vitest
+**Tech Stack:** Next.js 16, Vercel AI SDK (`ai` + `@ai-sdk/anthropic`), Drizzle ORM + better-sqlite3, Tailwind CSS + shadcn/ui, react-markdown + remark-gfm + shiki, jose (JWT), bcryptjs, Vitest
+
+> **Runtime notes (discovered during implementation):**
+> - **Drizzle + better-sqlite3 is synchronous.** Do NOT use `await` on any Drizzle operations (`.get()`, `.all()`, `.insert()`, `.update()`, `.delete()`). They return values directly.
+> - **`params` in Next.js 16 route handlers is NOT a Promise.** Type as `{ params: { id: string } }` and access directly without `await`.
+> - **React 19 event types are deprecated.** Use structural typing `(e: { preventDefault(): void })` instead of `React.FormEvent`.
+> - **Auth tests need `// @vitest-environment node`** at the top — jose's `Uint8Array` check fails in jsdom cross-realm.
 
 **Spec:** `docs/superpowers/specs/2026-04-16-claude-lite-design.md`
 
