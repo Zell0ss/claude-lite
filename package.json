@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.71",
+    "@ai-sdk/react": "^3.0.169",
     "@base-ui/react": "^1.4.0",
+    "@shikijs/rehype": "^4.0.2",
     "ai": "^6.0.167",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.9.0",
