@@ -22,3 +22,12 @@ primary_region = "mad"
   memory   = "512mb"
   cpu_kind = "shared"
   cpus     = 1
+
+[checks]
+  [checks.health]
+    type         = "http"
+    port         = 3000
+    path         = "/api/health"
+    interval     = "10s"
+    timeout      = "5s"
+    grace_period = "30s"
