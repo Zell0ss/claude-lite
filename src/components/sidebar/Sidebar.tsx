@@ -7,11 +7,6 @@ import { ConversationList } from './ConversationList'
 export function Sidebar() {
   const router = useRouter()
 
-  async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' })
-    router.push('/login')
-  }
-
   return (
     <aside className="w-64 flex-shrink-0 h-full bg-sidebar flex flex-col border-r border-border">
       {/* Wordmark */}
