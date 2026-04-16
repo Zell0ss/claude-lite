@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useChat } from '@ai-sdk/react'
-import { DefaultChatTransport, type UIMessage } from 'ai'
+import { DefaultChatTransport } from 'ai'
 import { v4 as uuidv4 } from 'uuid'
 import { MODELS, DEFAULT_MODEL, type ModelId } from '@/lib/models'
 import { ChatInput } from './ChatInput'
