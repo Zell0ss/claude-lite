@@ -8,6 +8,13 @@
       "when": 1776375298804,
       "tag": "0000_sticky_hellion",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1776380210084,
+      "tag": "0001_mixed_bedlam",
+      "breakpoints": true
     }
   ]
 }

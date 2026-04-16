@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer, index } from 'drizzle-orm/sqlite-core'
 
 export const conversations = sqliteTable('conversations', {
   id: text('id').primaryKey(),
@@ -7,7 +7,9 @@ export const conversations = sqliteTable('conversations', {
   systemPrompt: text('system_prompt'),
   createdAt: integer('created_at').notNull(),
   updatedAt: integer('updated_at').notNull(),
-})
+}, (t) => [
+  index('idx_conv_updated').on(t.updatedAt),
+])
 
 export const messages = sqliteTable('messages', {
   id: text('id').primaryKey(),
@@ -18,7 +20,9 @@ export const messages = sqliteTable('messages', {
   content: text('content').notNull(),
   model: text('model'),
   createdAt: integer('created_at').notNull(),
-})
+}, (t) => [
+  index('idx_messages_conv').on(t.conversationId, t.createdAt),
+])
 
 export type Conversation = typeof conversations.$inferSelect
 export type NewConversation = typeof conversations.$inferInsert
