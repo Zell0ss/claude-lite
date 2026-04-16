@@ -43,6 +43,8 @@
   --color-accent-brand-foreground: var(--accent-brand-foreground);
   --color-code-inline-bg: var(--code-inline-bg);
   --color-code-inline-fg: var(--code-inline-fg);
+  --font-size-display: 40px;
+  --line-height-display: 48px;
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 10px;

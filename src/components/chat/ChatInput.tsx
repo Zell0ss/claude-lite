@@ -69,14 +69,14 @@ export function ChatInput({ input, isStreaming, onChange, onSubmit, onStop }: Pr
                 disabled={!canSend}
                 className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
                   canSend
-                    ? 'bg-accent hover:bg-accent-brand-hover cursor-pointer'
+                    ? 'bg-accent-brand hover:bg-accent-brand-hover cursor-pointer'
                     : 'bg-muted cursor-not-allowed'
                 }`}
                 aria-label="Enviar mensaje"
               >
                 <ArrowUp
                   size={14}
-                  className={canSend ? 'text-accent-foreground' : 'text-foreground-subtle'}
+                  className={canSend ? 'text-accent-brand-foreground' : 'text-foreground-subtle'}
                 />
               </button>
             )}
