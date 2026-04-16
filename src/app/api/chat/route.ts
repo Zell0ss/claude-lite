@@ -1,4 +1,4 @@
-import { streamText } from 'ai'
+import { streamText, convertToModelMessages, type UIMessage } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
@@ -9,6 +9,13 @@ import { MODELS } from '@/lib/models'
 const anthropic = createAnthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
+
+function extractText(msg: UIMessage): string {
+  for (const part of msg.parts) {
+    if (part.type === 'text') return part.text
+  }
+  return ''
+}
 
 export async function POST(req: NextRequest) {
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -25,7 +32,7 @@ export async function POST(req: NextRequest) {
     conversation_id: string
     model: string
     system_prompt?: string
-    messages: Array<{ role: 'user' | 'assistant'; content: string }>
+    messages: UIMessage[]
   }
 
   if (!conversation_id || !model || !msgs?.length) {
@@ -39,7 +46,6 @@ export async function POST(req: NextRequest) {
 
   const now = Date.now()
 
-  // Auto-create conversation if it doesn't exist
   const existing = db
     .select()
     .from(conversations)
@@ -47,45 +53,38 @@ export async function POST(req: NextRequest) {
     .get()
 
   const lastUserMsg = msgs[msgs.length - 1]
+  const lastUserText = extractText(lastUserMsg)
 
   if (!existing) {
-    const title = lastUserMsg.content.slice(0, 60)
     db.insert(conversations).values({
       id: conversation_id,
-      title,
+      title: lastUserText.slice(0, 60),
       model,
       systemPrompt: system_prompt ?? null,
       createdAt: now,
       updatedAt: now,
     }).run()
-    db.insert(messages).values({
-      id: crypto.randomUUID(),
-      conversationId: conversation_id,
-      role: 'user',
-      content: lastUserMsg.content,
-      createdAt: now,
-    }).run()
   } else {
-    // Save only the new user message (last in array)
-    db.insert(messages).values({
-      id: crypto.randomUUID(),
-      conversationId: conversation_id,
-      role: 'user',
-      content: lastUserMsg.content,
-      createdAt: now,
-    }).run()
     db.update(conversations)
       .set({ updatedAt: now, model })
       .where(eq(conversations.id, conversation_id))
       .run()
   }
 
+  db.insert(messages).values({
+    id: crypto.randomUUID(),
+    conversationId: conversation_id,
+    role: 'user',
+    content: lastUserText,
+    createdAt: now,
+  }).run()
+
   const systemPromptText = existing?.systemPrompt ?? system_prompt
 
   const result = streamText({
     model: anthropic(model),
     system: systemPromptText ?? undefined,
-    messages: msgs,
+    messages: await convertToModelMessages(msgs),
     onFinish: ({ text }) => {
       if (!text) return
       try {

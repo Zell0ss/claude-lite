@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
-import { COOKIE_NAME } from '@/lib/auth'
 
+const COOKIE_NAME = 'claude-lite-session'
 const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/health']
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
 
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {

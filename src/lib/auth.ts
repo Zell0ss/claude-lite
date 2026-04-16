@@ -21,8 +21,10 @@ export async function verifyToken(token: string) {
 }
 
 export async function verifyPassword(password: string): Promise<boolean> {
-  const hash = process.env.AUTH_PASSWORD_HASH
-  if (!hash) throw new Error('AUTH_PASSWORD_HASH is not set')
+  const hashSuffix = process.env.AUTH_PASSWORD_HASH
+  if (!hashSuffix) throw new Error('AUTH_PASSWORD_HASH is not set')
+  // Stored without the $2b$12$ prefix to avoid dotenv $ interpolation issues
+  const hash = hashSuffix.startsWith('$') ? hashSuffix : `$2b$12$${hashSuffix}`
   return compare(password, hash)
 }
 

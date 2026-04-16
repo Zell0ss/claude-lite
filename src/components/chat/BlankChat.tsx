@@ -19,6 +19,8 @@ export function BlankChat() {
   // Stable conversation ID for the new chat
   const [conversationId] = useState(() => uuidv4())
 
+  const [hasError, setHasError] = useState(false)
+
   const { messages, sendMessage, status, error, stop } = useChat({
     id: conversationId,
     transport: new DefaultChatTransport({
@@ -30,7 +32,12 @@ export function BlankChat() {
       },
     }),
     onFinish: () => {
-      router.push(`/chat/${conversationId}`)
+      console.log('[BlankChat] onFinish fired, hasError:', hasError)
+      if (!hasError) router.push(`/chat/${conversationId}`)
+    },
+    onError: (err) => {
+      console.error('[BlankChat] stream error:', err)
+      setHasError(true)
     },
   })
 
