@@ -1634,20 +1634,7 @@ export async function register() {
 }
 ```
 
-Also add `instrumentationHook: true` to `next.config.ts` (required to opt in):
-
-```typescript
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
-  output: 'standalone',
-  experimental: {
-    instrumentationHook: true,
-  },
-}
-
-export default nextConfig
-```
+Note: `instrumentationHook` was removed in Next.js 16+ — instrumentation is enabled by default. The `next.config.ts` already has `output: 'standalone'` only. No changes needed to `next.config.ts`.
 
 - [ ] **Step 7: Run migrations and start dev server**
 
@@ -1714,6 +1701,8 @@ RUN addgroup --system --gid 1001 nodejs && \
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+# Migrations must be accessible at process.cwd()/src/lib/db/migrations at runtime
+COPY --from=builder /app/src/lib/db/migrations ./src/lib/db/migrations
 
 RUN chown -R nextjs:nodejs /app
 USER nextjs

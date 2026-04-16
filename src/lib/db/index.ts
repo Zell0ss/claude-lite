@@ -17,5 +17,8 @@ sqlite.pragma('foreign_keys = ON')
 export const db = drizzle(sqlite, { schema })
 
 export function runMigrations() {
-  migrate(db, { migrationsFolder: path.join(__dirname, 'migrations') })
+  // Use process.cwd()-relative path so it works in both dev and standalone builds.
+  // The Dockerfile must copy src/lib/db/migrations alongside the app.
+  const migrationsFolder = path.join(process.cwd(), 'src', 'lib', 'db', 'migrations')
+  migrate(db, { migrationsFolder })
 }
