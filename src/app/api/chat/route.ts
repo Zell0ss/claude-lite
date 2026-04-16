@@ -4,12 +4,17 @@ import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
 import { conversations, messages } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
+import { MODELS } from '@/lib/models'
 
 const anthropic = createAnthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 })
 
 export async function POST(req: NextRequest) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return new Response('ANTHROPIC_API_KEY not configured', { status: 500 })
+  }
+
   const body = await req.json()
   const {
     conversation_id,
@@ -25,6 +30,11 @@ export async function POST(req: NextRequest) {
 
   if (!conversation_id || !model || !msgs?.length) {
     return new Response('Missing required fields', { status: 400 })
+  }
+
+  const validModel = MODELS.find((m) => m.id === model)
+  if (!validModel) {
+    return new Response('Invalid model', { status: 400 })
   }
 
   const now = Date.now()
@@ -78,18 +88,22 @@ export async function POST(req: NextRequest) {
     messages: msgs,
     onFinish: ({ text }) => {
       if (!text) return
-      db.insert(messages).values({
-        id: crypto.randomUUID(),
-        conversationId: conversation_id,
-        role: 'assistant',
-        content: text,
-        model,
-        createdAt: Date.now(),
-      }).run()
-      db.update(conversations)
-        .set({ updatedAt: Date.now() })
-        .where(eq(conversations.id, conversation_id))
-        .run()
+      try {
+        db.insert(messages).values({
+          id: crypto.randomUUID(),
+          conversationId: conversation_id,
+          role: 'assistant',
+          content: text,
+          model,
+          createdAt: Date.now(),
+        }).run()
+        db.update(conversations)
+          .set({ updatedAt: Date.now() })
+          .where(eq(conversations.id, conversation_id))
+          .run()
+      } catch (err) {
+        console.error('[chat] Failed to persist assistant message:', err)
+      }
     },
   })
 

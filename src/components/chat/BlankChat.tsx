@@ -7,14 +7,7 @@ import { DefaultChatTransport, type UIMessage } from 'ai'
 import { v4 as uuidv4 } from 'uuid'
 import { MODELS, DEFAULT_MODEL, type ModelId } from '@/lib/models'
 import { ChatInput } from './ChatInput'
-
-// Extract text content from a UIMessage (ai@6 uses parts, not content)
-function getTextContent(msg: UIMessage): string {
-  for (const part of msg.parts) {
-    if (part.type === 'text') return part.text
-  }
-  return ''
-}
+import { getTextContent } from './utils'
 
 export function BlankChat() {
   const router = useRouter()

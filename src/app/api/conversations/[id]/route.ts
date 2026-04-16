@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { conversations, messages } from '@/lib/db/schema'
 import { eq, asc } from 'drizzle-orm'
+import { MODELS } from '@/lib/models'
 
 export async function GET(
   _req: NextRequest,
@@ -36,7 +37,12 @@ export async function PATCH(
 
   const update: Record<string, unknown> = { updatedAt: Date.now() }
   if (typeof body.title === 'string') update.title = body.title.slice(0, 100)
-  if (typeof body.model === 'string') update.model = body.model
+  if (typeof body.model === 'string') {
+    if (!MODELS.some((m) => m.id === body.model)) {
+      return NextResponse.json({ error: 'Invalid model' }, { status: 400 })
+    }
+    update.model = body.model
+  }
 
   db.update(conversations)
     .set(update)

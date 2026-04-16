@@ -6,6 +6,7 @@ import { DefaultChatTransport, type UIMessage } from 'ai'
 import { MODELS } from '@/lib/models'
 import { MessageList } from './MessageList'
 import { ChatInput } from './ChatInput'
+import { getTextContent } from './utils'
 import type { Conversation, Message } from '@/lib/db/schema'
 
 interface Props {
@@ -20,14 +21,6 @@ function dbMessageToUIMessage(m: Message): UIMessage {
     role: m.role as 'user' | 'assistant',
     parts: [{ type: 'text' as const, text: m.content }],
   }
-}
-
-// Extract text content from a UIMessage (ai@6 uses parts array)
-function getTextContent(msg: UIMessage): string {
-  for (const part of msg.parts) {
-    if (part.type === 'text') return part.text
-  }
-  return ''
 }
 
 export function ChatArea({ conversation, initialMessages }: Props) {
