@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const { id } = params
-  const conv = await db
+  const conv = db
     .select()
     .from(conversations)
     .where(eq(conversations.id, id))
@@ -37,12 +37,11 @@ export async function PATCH(
   if (typeof body.title === 'string') update.title = body.title.slice(0, 100)
   if (typeof body.model === 'string') update.model = body.model
 
-  await db
-    .update(conversations)
+  db.update(conversations)
     .set(update)
     .where(eq(conversations.id, id))
 
-  const updated = await db
+  const updated = db
     .select()
     .from(conversations)
     .where(eq(conversations.id, id))
@@ -57,6 +56,6 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const { id } = params
-  await db.delete(conversations).where(eq(conversations.id, id))
+  db.delete(conversations).where(eq(conversations.id, id))
   return NextResponse.json({ ok: true })
 }
