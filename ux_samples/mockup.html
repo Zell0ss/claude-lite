@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Claude Lite — Mockup de Diseño (Fase 1)</title>
+
+<!-- Fuentes -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Lucide icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  :root {
+    /* Neutros */
+    --background: 0 0% 10%;
+    --sidebar: 0 0% 7%;
+    --popover: 0 0% 15%;
+    --card: 0 0% 12%;
+    --muted: 0 0% 18%;
+    --muted-hover: 0 0% 14%;
+    --border: 0 0% 20%;
+
+    /* Texto */
+    --foreground: 0 0% 92%;
+    --foreground-muted: 0 0% 64%;
+    --foreground-subtle: 0 0% 45%;
+
+    /* Acento coral */
+    --accent: 14 56% 52%;
+    --accent-hover: 14 56% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Inline code */
+    --code-inline-bg: 5 30% 22%;
+    --code-inline-fg: 5 70% 75%;
+
+    /* Semánticos */
+    --destructive: 0 70% 62%;
+    --destructive-hover-bg: 0 70% 62% / 0.12;
+
+    /* Fuentes */
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Monaco, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    font-family: var(--font-sans);
+    background: hsl(0 0% 5%);
+    color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+
+  /* Scrollbar custom */
+  .scroll-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .scroll-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(0 0% 28%);
+  }
+
+  /* Asterisco coral — pulso */
+  @keyframes pulse-asterisk {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50%      { opacity: 1;   transform: scale(1); }
+  }
+  .asterisk-pulsing {
+    animation: pulse-asterisk 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    transform-origin: center;
+  }
+  .asterisk-rest {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Tipografía de contenido */
+  .prose-claude { font-size: 16px; line-height: 1.6; color: hsl(var(--foreground)); }
+  .prose-claude p { margin: 0 0 16px 0; }
+  .prose-claude p:last-child { margin-bottom: 0; }
+  .prose-claude strong { font-weight: 600; }
+  .prose-claude ul { margin: 0 0 16px 0; padding-left: 24px; list-style-type: disc; }
+  .prose-claude ul li { margin-bottom: 8px; line-height: 1.6; }
+  .prose-claude ul li::marker { color: hsl(var(--foreground-muted)); }
+  .prose-claude ol { margin: 0 0 16px 0; padding-left: 24px; list-style-type: decimal; }
+  .prose-claude ol li { margin-bottom: 8px; line-height: 1.6; }
+  .prose-claude blockquote {
+    border-left: 2px solid hsl(var(--border));
+    padding-left: 16px;
+    margin: 0 0 16px 0;
+    color: hsl(var(--foreground-muted));
+  }
+  .prose-claude table {
+    border-collapse: collapse;
+    margin: 0 0 16px 0;
+    width: auto;
+    font-size: 14px;
+  }
+  .prose-claude table th, .prose-claude table td {
+    border: 1px solid hsl(var(--border));
+    padding: 8px 12px;
+    text-align: left;
+  }
+  .prose-claude table th {
+    font-weight: 600;
+    background: hsl(var(--muted));
+  }
+  .prose-claude h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 24px 0 8px 0;
+    line-height: 1.4;
+  }
+  .prose-claude code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: hsl(var(--code-inline-bg));
+    color: hsl(var(--code-inline-fg));
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .prose-claude pre {
+    margin: 0 0 16px 0;
+    background: hsl(var(--card));
+    border-radius: 10px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .prose-claude pre .code-lang {
+    display: block;
+    color: hsl(var(--foreground-subtle));
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  .prose-claude pre code {
+    background: transparent;
+    color: hsl(var(--foreground));
+    padding: 0;
+    font-size: 14px;
+  }
+
+  /* Syntax highlight manual (fake shiki) */
+  .tok-keyword  { color: hsl(14 70% 65%); }     /* coral */
+  .tok-string   { color: hsl(142 40% 62%); }    /* verde suave */
+  .tok-key      { color: hsl(5 70% 75%); }      /* rosa */
+  .tok-comment  { color: hsl(var(--foreground-subtle)); font-style: italic; }
+  .tok-number   { color: hsl(210 50% 70%); }
+  .tok-punct    { color: hsl(var(--foreground-muted)); }
+  .tok-var      { color: hsl(5 70% 75%); }
+
+  /* Escena: marco de frame entre secciones */
+  .scene {
+    background: hsl(var(--background));
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px -15px rgba(0,0,0,0.6);
+    border: 1px solid hsl(0 0% 14%);
+  }
+
+  .scene-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: hsl(var(--foreground-subtle));
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .scene-title {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    color: hsl(var(--foreground));
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .scene-desc {
+    font-size: 14px;
+    color: hsl(var(--foreground-muted));
+    margin-bottom: 24px;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  /* Sidebar item hover/active states */
+  .conv-item { position: relative; }
+  .conv-item .conv-menu-trigger { opacity: 0; transition: opacity 120ms; }
+  .conv-item:hover .conv-menu-trigger { opacity: 1; }
+  .conv-item.is-active .conv-menu-trigger { opacity: 1; }
+
+  /* Focus rings accesibles */
+  button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+    outline: 2px solid hsl(var(--accent));
+    outline-offset: 2px;
+  }
+
+  /* Toast */
+  @keyframes toast-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .toast { animation: toast-in 180ms ease-out; }
+
+  /* Modal overlay */
+  .modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  /* Navegación del mockup */
+  .mock-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: hsla(0 0% 5% / 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid hsl(0 0% 12%);
+  }
+  .mock-nav a {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: hsl(var(--foreground-muted));
+    letter-spacing: 0.02em;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 120ms;
+    white-space: nowrap;
+  }
+  .mock-nav a:hover {
+    color: hsl(var(--foreground));
+    background: hsl(0 0% 12%);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ========== NAV DEL MOCKUP ========== -->
+<nav class="mock-nav">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center gap-2 overflow-x-auto scroll-thin">
+    <span style="font-family: var(--font-serif); font-size: 18px; margin-right: 16px;">Claude Lite</span>
+    <span style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle)); margin-right: 8px;">MOCKUP · FASE 1</span>
+    <span style="flex: 1;"></span>
+    <a href="#s1">01 · Login</a>
+    <a href="#s2">02 · Blank Chat</a>
+    <a href="#s3">03 · Conversación</a>
+    <a href="#s4">04 · Streaming</a>
+    <a href="#s5">05 · Menú contextual</a>
+    <a href="#s6">06 · Modal</a>
+    <a href="#s7">07 · Toast</a>
+    <a href="#s8">08 · Tokens</a>
+  </div>
+</nav>
+
+<div class="max-w-7xl mx-auto px-6 py-16 space-y-24">
+
+<!-- =========================================== -->
+<!-- INTRO                                        -->
+<!-- =========================================== -->
+<section>
+  <h1 style="font-family: var(--font-serif); font-size: 56px; line-height: 1.1; margin: 0 0 16px 0; letter-spacing: -0.02em;">
+    <svg viewBox="0 0 100 100" class="inline-block align-middle" style="width: 56px; height: 56px; color: hsl(var(--accent)); margin-right: 8px;">
+      <g fill="currentColor">
+        <rect x="45" y="5" width="10" height="90" rx="2"/>
+        <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(45 50 50)"/>
+        <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(90 50 50)"/>
+        <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(135 50 50)"/>
+      </g>
+    </svg>
+    Claude Lite — Mockup
+  </h1>
+  <p style="font-size: 16px; color: hsl(var(--foreground-muted)); max-width: 720px; line-height: 1.6;">
+    Validación visual del design system. Cada frame es una escena estática, no un prototipo funcional. El asterisco coral pulsa de verdad. Los botones no envían, los inputs no procesan, pero la paleta, tipografía y proporciones son las del sistema final.
+  </p>
+</section>
+
+<!-- =========================================== -->
+<!-- 01 · LOGIN                                   -->
+<!-- =========================================== -->
+<section id="s1">
+  <div class="scene-label">01 · Login</div>
+  <h2 class="scene-title">Inicio de sesión</h2>
+  <p class="scene-desc">
+    Página minimalista con wordmark serif, asterisco coral estático (sin pulso), un campo de contraseña y un botón primary. Estado de error como variante.
+  </p>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Login idle -->
+    <div class="scene" style="height: 560px;">
+      <div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 32px;">
+        <div style="width: 100%; max-width: 380px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 32px;">
+            <svg viewBox="0 0 100 100" style="width: 28px; height: 28px; color: hsl(var(--accent)); flex-shrink: 0;">
+              <g fill="currentColor">
+                <rect x="45" y="5" width="10" height="90" rx="2"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(45 50 50)"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(90 50 50)"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(135 50 50)"/>
+              </g>
+            </svg>
+            <h1 style="font-family: var(--font-serif); font-size: 32px; font-weight: 400; margin: 0; letter-spacing: -0.01em;">Claude Lite</h1>
+          </div>
+          <form onsubmit="return false;">
+            <label style="display: block; font-size: 14px; color: hsl(var(--foreground-muted)); margin-bottom: 8px;">Contraseña</label>
+            <input
+              type="password"
+              placeholder="••••••••••••"
+              style="width: 100%; background: hsl(var(--muted)); border: none; border-radius: 10px; padding: 12px 14px; color: hsl(var(--foreground)); font-size: 15px; font-family: var(--font-sans);"
+            />
+            <button
+              style="margin-top: 16px; width: 100%; background: hsl(var(--accent)); color: white; border: none; border-radius: 10px; height: 40px; font-weight: 500; font-size: 14px; font-family: var(--font-sans); cursor: pointer; transition: background 120ms;"
+              onmouseover="this.style.background='hsl(var(--accent-hover))'"
+              onmouseout="this.style.background='hsl(var(--accent))'"
+            >Entrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Login error -->
+    <div class="scene" style="height: 560px;">
+      <div style="height: 100%; display: flex; align-items: center; justify-content: center; padding: 32px;">
+        <div style="width: 100%; max-width: 380px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 32px;">
+            <svg viewBox="0 0 100 100" style="width: 28px; height: 28px; color: hsl(var(--accent)); flex-shrink: 0;">
+              <g fill="currentColor">
+                <rect x="45" y="5" width="10" height="90" rx="2"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(45 50 50)"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(90 50 50)"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(135 50 50)"/>
+              </g>
+            </svg>
+            <h1 style="font-family: var(--font-serif); font-size: 32px; font-weight: 400; margin: 0; letter-spacing: -0.01em;">Claude Lite</h1>
+          </div>
+          <form onsubmit="return false;">
+            <label style="display: block; font-size: 14px; color: hsl(var(--foreground-muted)); margin-bottom: 8px;">Contraseña</label>
+            <input
+              type="password"
+              value="wrongpass"
+              style="width: 100%; background: hsl(var(--muted)); border: 1px solid hsl(var(--destructive)); border-radius: 10px; padding: 11px 13px; color: hsl(var(--foreground)); font-size: 15px; font-family: var(--font-sans);"
+            />
+            <p style="margin: 8px 0 0 0; font-size: 13px; color: hsl(var(--destructive));">Contraseña incorrecta.</p>
+            <button
+              style="margin-top: 16px; width: 100%; background: hsl(var(--accent)); color: white; border: none; border-radius: 10px; height: 40px; font-weight: 500; font-size: 14px; font-family: var(--font-sans); cursor: pointer;"
+            >Entrar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- 02 · BLANK CHAT                              -->
+<!-- =========================================== -->
+<section id="s2">
+  <div class="scene-label">02 · Blank chat</div>
+  <h2 class="scene-title">Estado inicial sin conversación</h2>
+  <p class="scene-desc">
+    Sidebar poblada con conversaciones de ejemplo. Área principal con el greeting serif + asterisco coral estático e input centrado. Chip "System prompt" a la izquierda del input (expandible).
+  </p>
+
+  <div class="scene" style="height: 720px;">
+    <div style="display: flex; height: 100%;">
+      <!-- SIDEBAR -->
+      <aside style="width: 260px; background: hsl(var(--sidebar)); display: flex; flex-direction: column; flex-shrink: 0;">
+        <!-- Header sidebar -->
+        <div style="padding: 16px;">
+          <h1 style="font-family: var(--font-serif); font-size: 18px; font-weight: 400; margin: 0; letter-spacing: -0.01em;">Claude Lite</h1>
+        </div>
+
+        <!-- Nav: New chat -->
+        <div style="padding: 0 8px;">
+          <button style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); font-weight: 500; cursor: pointer; transition: background 120ms; text-align: left;"
+            onmouseover="this.style.background='hsl(var(--muted-hover))'"
+            onmouseout="this.style.background='transparent'"
+          >
+            <i data-lucide="circle-plus" style="width: 16px; height: 16px; color: hsl(var(--foreground-muted));"></i>
+            Nueva conversación
+          </button>
+        </div>
+
+        <!-- Lista conversaciones -->
+        <div class="scroll-thin" style="flex: 1; overflow-y: auto; padding: 16px 8px 8px 8px;">
+          <div style="display: flex; flex-direction: column; gap: 1px;">
+            <!-- Items -->
+            <div class="conv-item" data-title="Dockerfile para app Next.js en fly.io" data-model="opus"></div>
+            <div class="conv-item" data-title="Recetas veganas para semana sin gluten" data-model="sonnet"></div>
+            <div class="conv-item" data-title="Ruta 3 días en Kioto, templos menos turísticos" data-model="sonnet"></div>
+            <div class="conv-item" data-title="Migración Drizzle: añadir columna no-null" data-model="opus"></div>
+            <div class="conv-item" data-title="Qué libro leer después de Piranesi" data-model="haiku"></div>
+            <div class="conv-item" data-title="Debugging segfault en código Rust async" data-model="opus"></div>
+            <div class="conv-item" data-title="Cómo marinar tempeh para que sepa a algo 😩" data-model="haiku"></div>
+            <div class="conv-item" data-title="Comparar bombas de calor aerotérmicas para reforma" data-model="sonnet"></div>
+            <div class="conv-item" data-title="Sintaxis de Prometheus histogram_quantile" data-model="haiku"></div>
+            <div class="conv-item" data-title="Explícame Kahneman System 1 vs System 2" data-model="sonnet"></div>
+            <div class="conv-item" data-title="Regex para validar IBAN español" data-model="haiku"></div>
+            <div class="conv-item" data-title="Regalo para cumple de mi madre (60 años, le gusta la cerámica)" data-model="sonnet"></div>
+            <div class="conv-item" data-title="Resumen ejecutivo del paper sobre speculative decoding" data-model="opus"></div>
+            <div class="conv-item" data-title="Rutina de fuerza 3 días/semana tras lesión de espalda" data-model="sonnet"></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main style="flex: 1; background: hsl(var(--background)); display: flex; flex-direction: column; min-width: 0;">
+        <!-- Header vacío -->
+        <div style="height: 56px; border-bottom: none;"></div>
+
+        <!-- Greeting + Input -->
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 0 24px; padding-top: 18vh;">
+          <!-- Greeting -->
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 32px;">
+            <svg viewBox="0 0 100 100" style="width: 40px; height: 40px; color: hsl(var(--accent)); flex-shrink: 0;">
+              <g fill="currentColor">
+                <rect x="45" y="5" width="10" height="90" rx="2"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(45 50 50)"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(90 50 50)"/>
+                <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(135 50 50)"/>
+              </g>
+            </svg>
+            <h2 style="font-family: var(--font-serif); font-size: 40px; font-weight: 400; margin: 0; letter-spacing: -0.01em; color: hsl(var(--foreground));">¿En qué puedo ayudarte?</h2>
+          </div>
+
+          <!-- Input container -->
+          <div style="width: 100%; max-width: 720px;">
+            <div style="background: hsl(var(--muted)); border-radius: 18px; padding: 16px 16px 8px 16px;">
+              <textarea
+                placeholder="Responder…"
+                style="width: 100%; background: transparent; border: none; outline: none; color: hsl(var(--foreground)); font-family: var(--font-sans); font-size: 16px; resize: none; min-height: 32px; line-height: 1.5;"
+                rows="1"
+              ></textarea>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+                <!-- Chip system prompt -->
+                <button style="display: flex; align-items: center; gap: 6px; background: transparent; border: none; border-radius: 6px; padding: 6px 10px; color: hsl(var(--foreground-muted)); font-size: 13px; font-family: var(--font-sans); cursor: pointer; transition: background 120ms;"
+                  onmouseover="this.style.background='hsl(0 0% 22%)'; this.style.color='hsl(var(--foreground))'"
+                  onmouseout="this.style.background='transparent'; this.style.color='hsl(var(--foreground-muted))'"
+                >
+                  <i data-lucide="sliders-horizontal" style="width: 14px; height: 14px;"></i>
+                  System prompt
+                </button>
+
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <!-- Model selector -->
+                  <button style="display: flex; align-items: center; gap: 6px; background: transparent; border: none; padding: 6px 10px; color: hsl(var(--foreground-muted)); font-size: 13px; font-weight: 500; font-family: var(--font-sans); cursor: pointer; border-radius: 6px; transition: background 120ms;"
+                    onmouseover="this.style.background='hsl(0 0% 22%)'; this.style.color='hsl(var(--foreground))'"
+                    onmouseout="this.style.background='transparent'; this.style.color='hsl(var(--foreground-muted))'"
+                  >
+                    Sonnet 4.6
+                    <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+                  </button>
+
+                  <!-- Send button idle (sin texto) -->
+                  <button disabled style="width: 32px; height: 32px; border-radius: 50%; background: hsl(0 0% 22%); border: none; display: flex; align-items: center; justify-content: center; cursor: not-allowed; color: hsl(var(--foreground-subtle));">
+                    <i data-lucide="arrow-up" style="width: 16px; height: 16px;"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- 03 · CONVERSACIÓN ACTIVA                     -->
+<!-- =========================================== -->
+<section id="s3">
+  <div class="scene-label">03 · Conversación activa</div>
+  <h2 class="scene-title">Markdown completo + asterisco en reposo</h2>
+  <p class="scene-desc">
+    Sidebar con conversación activa resaltada. Header con solo el título. User turn con burbuja alineada a la derecha, assistant turn sin burbuja con Markdown rico: párrafos, bold, listas, inline code, code block, blockquote, tabla. El asterisco coral en reposo (sin pulso) a la izquierda del último mensaje del assistant.
+  </p>
+
+  <div class="scene" style="height: 860px;">
+    <div style="display: flex; height: 100%;">
+      <!-- SIDEBAR -->
+      <aside style="width: 260px; background: hsl(var(--sidebar)); display: flex; flex-direction: column; flex-shrink: 0;">
+        <div style="padding: 16px;">
+          <h1 style="font-family: var(--font-serif); font-size: 18px; font-weight: 400; margin: 0; letter-spacing: -0.01em;">Claude Lite</h1>
+        </div>
+        <div style="padding: 0 8px;">
+          <button style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); font-weight: 500; cursor: pointer; text-align: left; transition: background 120ms;"
+            onmouseover="this.style.background='hsl(var(--muted-hover))'"
+            onmouseout="this.style.background='transparent'"
+          >
+            <i data-lucide="circle-plus" style="width: 16px; height: 16px; color: hsl(var(--foreground-muted));"></i>
+            Nueva conversación
+          </button>
+        </div>
+        <div class="scroll-thin" style="flex: 1; overflow-y: auto; padding: 16px 8px 8px 8px;">
+          <div style="display: flex; flex-direction: column; gap: 1px;" id="sidebar-active-list">
+            <!-- "Dockerfile para app Next.js en fly.io" será el activo -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main style="flex: 1; background: hsl(var(--background)); display: flex; flex-direction: column; min-width: 0; position: relative;">
+        <!-- Header -->
+        <div style="height: 56px; padding: 0 24px; display: flex; align-items: center; flex-shrink: 0;">
+          <h2 style="font-size: 20px; font-weight: 600; margin: 0; color: hsl(var(--foreground)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Dockerfile para app Next.js en fly.io</h2>
+        </div>
+
+        <!-- Mensajes -->
+        <div class="scroll-thin" style="flex: 1; overflow-y: auto; padding: 0 24px;">
+          <div style="max-width: 768px; margin: 0 auto; padding: 16px 0 40px 0; display: flex; flex-direction: column; gap: 24px;">
+
+            <!-- User turn -->
+            <div style="display: flex; justify-content: flex-end;">
+              <div style="background: hsl(var(--muted)); border-radius: 18px; padding: 12px 16px; max-width: 540px; font-size: 16px; line-height: 1.6;">
+                ¿Me pasas un Dockerfile para desplegar una app Next.js 15 (output standalone) en fly.io? Región Madrid, VM pequeña, volumen montado en <code style="font-family: var(--font-mono); font-size: 0.9em; background: hsl(var(--code-inline-bg)); color: hsl(var(--code-inline-fg)); padding: 2px 5px; border-radius: 4px;">/data</code>.
+              </div>
+            </div>
+
+            <!-- Assistant turn -->
+            <div style="position: relative;">
+              <div class="prose-claude">
+                <p>Aquí tienes una configuración mínima y funcional. Usa <strong>multi-stage build</strong> para que la imagen final sea lo más pequeña posible y aprovecha el output <code>standalone</code> de Next.js para no arrastrar <code>node_modules</code> en producción.</p>
+
+                <h3>Dockerfile</h3>
+                <pre><span class="code-lang">dockerfile</span><code><span class="tok-comment"># Stage 1 — deps</span>
+<span class="tok-keyword">FROM</span> node:20-alpine <span class="tok-keyword">AS</span> deps
+<span class="tok-keyword">WORKDIR</span> /app
+<span class="tok-keyword">COPY</span> package.json package-lock.json ./
+<span class="tok-keyword">RUN</span> npm ci
+
+<span class="tok-comment"># Stage 2 — build</span>
+<span class="tok-keyword">FROM</span> node:20-alpine <span class="tok-keyword">AS</span> build
+<span class="tok-keyword">WORKDIR</span> /app
+<span class="tok-keyword">COPY</span> --from=deps /app/node_modules ./node_modules
+<span class="tok-keyword">COPY</span> . .
+<span class="tok-keyword">RUN</span> npm run build
+
+<span class="tok-comment"># Stage 3 — runtime</span>
+<span class="tok-keyword">FROM</span> node:20-alpine <span class="tok-keyword">AS</span> runtime
+<span class="tok-keyword">WORKDIR</span> /app
+<span class="tok-keyword">ENV</span> NODE_ENV=<span class="tok-string">production</span>
+<span class="tok-keyword">COPY</span> --from=build /app/.next/standalone ./
+<span class="tok-keyword">COPY</span> --from=build /app/.next/static ./.next/static
+<span class="tok-keyword">COPY</span> --from=build /app/public ./public
+<span class="tok-keyword">EXPOSE</span> <span class="tok-number">3000</span>
+<span class="tok-keyword">CMD</span> [<span class="tok-string">"node"</span>, <span class="tok-string">"server.js"</span>]</code></pre>
+
+                <h3>fly.toml mínimo</h3>
+                <pre><span class="code-lang">toml</span><code><span class="tok-key">app</span> = <span class="tok-string">"claude-lite"</span>
+<span class="tok-key">primary_region</span> = <span class="tok-string">"mad"</span>
+
+[<span class="tok-keyword">build</span>]
+
+[[<span class="tok-keyword">mounts</span>]]
+  <span class="tok-key">source</span> = <span class="tok-string">"data"</span>
+  <span class="tok-key">destination</span> = <span class="tok-string">"/data"</span>
+
+[<span class="tok-keyword">http_service</span>]
+  <span class="tok-key">internal_port</span> = <span class="tok-number">3000</span>
+  <span class="tok-key">force_https</span> = <span class="tok-keyword">true</span>
+  <span class="tok-key">auto_stop_machines</span> = <span class="tok-keyword">true</span>
+  <span class="tok-key">min_machines_running</span> = <span class="tok-number">0</span></code></pre>
+
+                <h3>Pasos para desplegar</h3>
+                <ol>
+                  <li>Crea el volumen: <code>fly volumes create data --region mad --size 1</code>.</li>
+                  <li>Configura tus secretos: <code>fly secrets set ANTHROPIC_API_KEY=…</code>.</li>
+                  <li>Lanza el primer deploy con <code>fly deploy</code>.</li>
+                </ol>
+
+                <h3>Recursos sugeridos</h3>
+                <table>
+                  <thead>
+                    <tr><th>Recurso</th><th>Valor</th><th>Coste aprox.</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>VM</td><td>shared-cpu-1x 512MB</td><td>~$3/mes</td></tr>
+                    <tr><td>Volumen</td><td>1GB en <code>/data</code></td><td>~$0.15/mes</td></tr>
+                    <tr><td>Tráfico</td><td>Primeros 100GB gratis</td><td>$0</td></tr>
+                  </tbody>
+                </table>
+
+                <blockquote>
+                  <p>Con <code>auto_stop_machines = true</code> la máquina se duerme cuando no hay tráfico. El primer request después de dormir tarda ~2s en levantar, a cambio de coste cercano a cero en idle.</p>
+                </blockquote>
+
+                <p>Dime si quieres que añada <strong>healthcheck</strong>, compresión Brotli o logging estructurado y lo meto en otra iteración.</p>
+              </div>
+
+              <!-- Asterisco en reposo -->
+              <div style="position: absolute; left: -24px; bottom: 8px;">
+                <svg viewBox="0 0 100 100" class="asterisk-rest" style="width: 14px; height: 14px; color: hsl(var(--accent));">
+                  <g fill="currentColor">
+                    <rect x="45" y="5" width="10" height="90" rx="2"/>
+                    <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(45 50 50)"/>
+                    <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(90 50 50)"/>
+                    <rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(135 50 50)"/>
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Scroll to bottom button -->
+        <div style="position: absolute; bottom: 140px; left: 50%; transform: translateX(-50%); display: none;">
+          <button style="width: 36px; height: 36px; border-radius: 50%; background: hsl(0 0% 22%); border: none; display: flex; align-items: center; justify-content: center; color: hsl(var(--foreground-muted)); box-shadow: 0 1px 2px rgba(0,0,0,0.3); cursor: pointer;">
+            <i data-lucide="arrow-down" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+
+        <!-- Input fijo abajo -->
+        <div style="padding: 0 24px 16px 24px;">
+          <div style="max-width: 768px; margin: 0 auto;">
+            <div style="background: hsl(var(--muted)); border-radius: 18px; padding: 16px 16px 8px 16px;">
+              <textarea
+                placeholder="Responder…"
+                style="width: 100%; background: transparent; border: none; outline: none; color: hsl(var(--foreground)); font-family: var(--font-sans); font-size: 16px; resize: none; min-height: 24px; line-height: 1.5;"
+                rows="1"
+              ></textarea>
+              <div style="display: flex; align-items: center; justify-content: flex-end; margin-top: 8px; gap: 8px;">
+                <button style="display: flex; align-items: center; gap: 6px; background: transparent; border: none; padding: 6px 10px; color: hsl(var(--foreground-muted)); font-size: 13px; font-weight: 500; font-family: var(--font-sans); cursor: pointer; border-radius: 6px;">
+                  Opus 4.7
+                  <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+                </button>
+                <button disabled style="width: 32px; height: 32px; border-radius: 50%; background: hsl(0 0% 22%); border: none; display: flex; align-items: center; justify-content: center; cursor: not-allowed; color: hsl(var(--foreground-subtle));">
+                  <i data-lucide="arrow-up" style="width: 16px; height: 16px;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- 04 · STREAMING                               -->
+<!-- =========================================== -->
+<section id="s4">
+  <div class="scene-label">04 · Streaming en curso</div>
+  <h2 class="scene-title">Asterisco pulsando + botón stop</h2>
+  <p class="scene-desc">
+    El assistant está escribiendo. El asterisco coral pulsa (abre esta página con el navegador para verlo animarse). El botón de enviar está en modo <code style="background: hsl(var(--code-inline-bg)); color: hsl(var(--code-inline-fg)); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;">Square</code> (stop), y enviar un nuevo mensaje está bloqueado.
+  </p>
+
+  <div class="scene" style="height: 520px;">
+    <div style="display: flex; height: 100%;">
+      <!-- Sidebar compacta -->
+      <aside style="width: 260px; background: hsl(var(--sidebar)); display: flex; flex-direction: column; flex-shrink: 0;">
+        <div style="padding: 16px;">
+          <h1 style="font-family: var(--font-serif); font-size: 18px; font-weight: 400; margin: 0;">Claude Lite</h1>
+        </div>
+        <div style="padding: 0 8px;">
+          <button style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); font-weight: 500; cursor: pointer; text-align: left;">
+            <i data-lucide="circle-plus" style="width: 16px; height: 16px; color: hsl(var(--foreground-muted));"></i>
+            Nueva conversación
+          </button>
+        </div>
+        <div style="flex: 1; padding: 16px 8px;">
+          <div style="padding: 8px 12px; border-radius: 6px; background: hsl(var(--muted)); font-size: 14px; font-weight: 600; color: hsl(var(--foreground)); display: flex; align-items: center; justify-content: space-between;">
+            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Debugging segfault en código Rust async</span>
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: hsl(var(--accent)); flex-shrink: 0; margin-left: 8px;"></span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main style="flex: 1; background: hsl(var(--background)); display: flex; flex-direction: column; min-width: 0;">
+        <div style="height: 56px; padding: 0 24px; display: flex; align-items: center;">
+          <h2 style="font-size: 20px; font-weight: 600; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Debugging segfault en código Rust async</h2>
+        </div>
+
+        <div style="flex: 1; padding: 0 24px; overflow-y: auto;" class="scroll-thin">
+          <div style="max-width: 768px; margin: 0 auto; padding: 16px 0 40px 0; display: flex; flex-direction: column; gap: 24px;">
+            <!-- User -->
+            <div style="display: flex; justify-content: flex-end;">
+              <div style="background: hsl(var(--muted)); border-radius: 18px; padding: 12px 16px; max-width: 540px; font-size: 16px; line-height: 1.6;">
+                Tengo un segfault al hacer <code style="font-family: var(--font-mono); font-size: 0.9em; background: hsl(var(--code-inline-bg)); color: hsl(var(--code-inline-fg)); padding: 2px 5px; border-radius: 4px;">.await</code> dentro de un spawn. ¿Cómo lo debuggeo?
+              </div>
+            </div>
+
+            <!-- Assistant streaming -->
+            <div class="prose-claude">
+              <p>Buena pregunta — un segfault en Rust async casi siempre tiene una de estas tres causas. Vamos por orden de probabilidad:</p>
+              <p>La primera y más común es un <strong>use-after-free</strong> causado por <svg viewBox="0 0 100 100" class="asterisk-pulsing inline-block align-middle" style="width: 12px; height: 12px; color: hsl(var(--accent)); margin-left: 2px;"><g fill="currentColor"><rect x="45" y="5" width="10" height="90" rx="2"/><rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(45 50 50)"/><rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(90 50 50)"/><rect x="45" y="5" width="10" height="90" rx="2" transform="rotate(135 50 50)"/></g></svg></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input con botón stop -->
+        <div style="padding: 0 24px 16px 24px;">
+          <div style="max-width: 768px; margin: 0 auto;">
+            <div style="background: hsl(var(--muted)); border-radius: 18px; padding: 16px 16px 8px 16px;">
+              <textarea
+                placeholder="Responder…"
+                style="width: 100%; background: transparent; border: none; outline: none; color: hsl(var(--foreground)); font-family: var(--font-sans); font-size: 16px; resize: none; min-height: 24px; line-height: 1.5;"
+                rows="1"
+              ></textarea>
+              <div style="display: flex; align-items: center; justify-content: flex-end; margin-top: 8px; gap: 8px;">
+                <button style="display: flex; align-items: center; gap: 6px; background: transparent; border: none; padding: 6px 10px; color: hsl(var(--foreground-muted)); font-size: 13px; font-weight: 500; font-family: var(--font-sans); cursor: pointer; border-radius: 6px;">
+                  Opus 4.7
+                  <i data-lucide="chevron-down" style="width: 14px; height: 14px;"></i>
+                </button>
+                <!-- Botón STOP -->
+                <button style="width: 32px; height: 32px; border-radius: 50%; background: hsl(0 0% 26%); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: hsl(var(--foreground));">
+                  <i data-lucide="square" style="width: 14px; height: 14px; fill: currentColor;"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- 05 · MENÚ CONTEXTUAL                         -->
+<!-- =========================================== -->
+<section id="s5">
+  <div class="scene-label">05 · Menú contextual</div>
+  <h2 class="scene-title">Tres puntos desplegado con submenú de modelos</h2>
+  <p class="scene-desc">
+    Dropdown abierto sobre un item del sidebar. Orden: Renombrar, Cambiar modelo (con submenú desplegado a la derecha), separación por espacio, Eliminar en destructive.
+  </p>
+
+  <div class="scene" style="height: 520px;">
+    <div style="display: flex; height: 100%; position: relative;">
+      <aside style="width: 260px; background: hsl(var(--sidebar)); display: flex; flex-direction: column; flex-shrink: 0;">
+        <div style="padding: 16px;">
+          <h1 style="font-family: var(--font-serif); font-size: 18px; font-weight: 400; margin: 0;">Claude Lite</h1>
+        </div>
+        <div style="padding: 0 8px;">
+          <button style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); font-weight: 500; cursor: pointer; text-align: left;">
+            <i data-lucide="circle-plus" style="width: 16px; height: 16px; color: hsl(var(--foreground-muted));"></i>
+            Nueva conversación
+          </button>
+        </div>
+        <div class="scroll-thin" style="flex: 1; overflow-y: auto; padding: 16px 8px;">
+          <div style="display: flex; flex-direction: column; gap: 1px;">
+            <!-- Item con menú abierto -->
+            <div style="padding: 8px 12px; border-radius: 6px; background: hsl(var(--muted-hover)); display: flex; align-items: center; gap: 8px;">
+              <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: hsl(var(--foreground));">Migración Drizzle: añadir columna</span>
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: hsl(var(--accent)); flex-shrink: 0;"></span>
+              <span style="width: 24px; height: 24px; border-radius: 4px; background: hsl(var(--muted)); display: flex; align-items: center; justify-content: center; color: hsl(var(--foreground));">
+                <i data-lucide="more-horizontal" style="width: 14px; height: 14px;"></i>
+              </span>
+            </div>
+            <div style="padding: 8px 12px; border-radius: 6px; font-size: 14px; color: hsl(var(--foreground-muted)); display: flex; align-items: center; justify-content: space-between;">
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Recetas veganas sin gluten</span>
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: hsl(var(--foreground-muted)); flex-shrink: 0; margin-left: 8px;"></span>
+            </div>
+            <div style="padding: 8px 12px; border-radius: 6px; font-size: 14px; color: hsl(var(--foreground-muted)); display: flex; align-items: center; justify-content: space-between;">
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Ruta 3 días en Kioto</span>
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: hsl(var(--foreground-muted)); flex-shrink: 0; margin-left: 8px;"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Popover principal -->
+        <div style="position: absolute; top: 86px; left: 244px; z-index: 10; background: hsl(var(--popover)); border-radius: 14px; padding: 6px; width: 200px; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.5);">
+          <button style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); cursor: pointer; text-align: left;"
+            onmouseover="this.style.background='hsl(var(--muted))'"
+            onmouseout="this.style.background='transparent'"
+          >
+            <i data-lucide="pencil" style="width: 16px; height: 16px; color: hsl(var(--foreground-muted));"></i>
+            Renombrar
+          </button>
+          <button style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: hsl(var(--muted)); border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); cursor: pointer; text-align: left;">
+            <i data-lucide="sparkles" style="width: 16px; height: 16px; color: hsl(var(--foreground-muted));"></i>
+            <span style="flex: 1;">Cambiar modelo</span>
+            <i data-lucide="chevron-right" style="width: 14px; height: 14px; color: hsl(var(--foreground-muted));"></i>
+          </button>
+          <div style="height: 12px;"></div>
+          <button style="width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--destructive)); font-size: 14px; font-family: var(--font-sans); cursor: pointer; text-align: left;"
+            onmouseover="this.style.background='hsla(0, 70%, 62%, 0.12)'"
+            onmouseout="this.style.background='transparent'"
+          >
+            <i data-lucide="trash-2" style="width: 16px; height: 16px;"></i>
+            Eliminar
+          </button>
+        </div>
+
+        <!-- Submenú -->
+        <div style="position: absolute; top: 130px; left: 452px; z-index: 10; background: hsl(var(--popover)); border-radius: 14px; padding: 6px; width: 180px; box-shadow: 0 4px 12px -2px rgba(0,0,0,0.5);">
+          <button style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); cursor: pointer; text-align: left;">
+            <span>Opus 4.7</span>
+          </button>
+          <button style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: hsl(var(--muted)); border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); cursor: pointer; text-align: left;">
+            <span>Sonnet 4.6</span>
+            <i data-lucide="check" style="width: 14px; height: 14px; color: hsl(var(--accent));"></i>
+          </button>
+          <button style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: transparent; border: none; border-radius: 6px; color: hsl(var(--foreground)); font-size: 14px; font-family: var(--font-sans); cursor: pointer; text-align: left;">
+            <span>Haiku 4.5</span>
+          </button>
+        </div>
+      </aside>
+
+      <main style="flex: 1; background: hsl(var(--background));"></main>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- 06 · MODAL                                   -->
+<!-- =========================================== -->
+<section id="s6">
+  <div class="scene-label">06 · Modal de confirmación</div>
+  <h2 class="scene-title">Eliminar conversación</h2>
+  <p class="scene-desc">
+    Diálogo centrado con overlay oscuro y backdrop-blur. Acción primaria en variante destructive.
+  </p>
+
+  <div class="scene" style="height: 480px; position: relative;">
+    <!-- Fondo de chat atenuado -->
+    <div style="display: flex; height: 100%; filter: brightness(0.6);">
+      <aside style="width: 260px; background: hsl(var(--sidebar));"></aside>
+      <main style="flex: 1; background: hsl(var(--background));"></main>
+    </div>
+
+    <!-- Overlay -->
+    <div class="modal-overlay" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;">
+      <div style="background: hsl(var(--popover)); border-radius: 14px; padding: 24px; width: 100%; max-width: 440px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.6);">
+        <h3 style="font-size: 18px; font-weight: 600; margin: 0 0 8px 0;">¿Eliminar esta conversación?</h3>
+        <p style="font-size: 14px; color: hsl(var(--foreground-muted)); margin: 0 0 20px 0; line-height: 1.6;">Esta acción no se puede deshacer. Se eliminarán todos los mensajes asociados.</p>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button style="padding: 8px 16px; background: transparent; border: none; border-radius: 8px; color: hsl(var(--foreground)); font-size: 14px; font-weight: 500; font-family: var(--font-sans); cursor: pointer;"
+            onmouseover="this.style.background='hsl(var(--muted))'"
+            onmouseout="this.style.background='transparent'"
+          >Cancelar</button>
+          <button style="padding: 8px 16px; background: hsl(var(--destructive)); border: none; border-radius: 8px; color: white; font-size: 14px; font-weight: 500; font-family: var(--font-sans); cursor: pointer;">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- 07 · TOAST                                   -->
+<!-- =========================================== -->
+<section id="s7">
+  <div class="scene-label">07 · Toast de error</div>
+  <h2 class="scene-title">Stream fallido</h2>
+  <p class="scene-desc">
+    Toast bottom-right, borde izquierdo en <code style="background: hsl(var(--code-inline-bg)); color: hsl(var(--code-inline-fg)); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px;">--destructive</code>, auto-dismiss a los 5s.
+  </p>
+
+  <div class="scene" style="height: 360px; position: relative;">
+    <div style="display: flex; height: 100%;">
+      <aside style="width: 260px; background: hsl(var(--sidebar));"></aside>
+      <main style="flex: 1; background: hsl(var(--background));"></main>
+    </div>
+
+    <div class="toast" style="position: absolute; bottom: 16px; right: 16px; background: hsl(var(--popover)); border-radius: 10px; padding: 12px 16px 12px 14px; border-left: 2px solid hsl(var(--destructive)); display: flex; align-items: flex-start; gap: 12px; max-width: 360px; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.5);">
+      <i data-lucide="triangle-alert" style="width: 18px; height: 18px; color: hsl(var(--destructive)); flex-shrink: 0; margin-top: 2px;"></i>
+      <div style="flex: 1;">
+        <div style="font-size: 14px; font-weight: 500; margin-bottom: 2px;">Error en el stream</div>
+        <div style="font-size: 13px; color: hsl(var(--foreground-muted)); line-height: 1.5;">El mensaje no se ha guardado. Inténtalo de nuevo.</div>
+      </div>
+      <button style="background: transparent; border: none; padding: 0; color: hsl(var(--foreground-subtle)); cursor: pointer; flex-shrink: 0; margin-top: 2px;">
+        <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================== -->
+<!-- 08 · TOKENS                                  -->
+<!-- =========================================== -->
+<section id="s8">
+  <div class="scene-label">08 · Tokens</div>
+  <h2 class="scene-title">Paleta y tipografía</h2>
+  <p class="scene-desc">
+    Los tokens del sistema renderizados. Estos son los HSL aproximados del doc — se afinarán con cuentagotas en Fase 2.
+  </p>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Paleta -->
+    <div class="scene" style="padding: 32px;">
+      <h3 style="font-family: var(--font-serif); font-size: 22px; margin: 0 0 20px 0;">Paleta</h3>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+
+        <!-- Grupo neutros -->
+        <div style="font-size: 11px; color: hsl(var(--foreground-subtle)); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-top: 8px;">Neutros</div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(0 0% 7%); border-radius: 6px; border: 1px solid hsl(0 0% 16%);"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px; color: hsl(var(--foreground));">--sidebar</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 7%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(0 0% 10%); border-radius: 6px; border: 1px solid hsl(0 0% 18%);"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--background</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 10%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(0 0% 12%); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--card</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 12%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(0 0% 15%); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--popover</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 15%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(0 0% 18%); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--muted</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 18%</div></div>
+        </div>
+
+        <!-- Grupo acento -->
+        <div style="font-size: 11px; color: hsl(var(--foreground-subtle)); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-top: 12px;">Acento</div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--accent)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--accent</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">14 56% 52%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--accent-hover)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--accent-hover</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">14 56% 58%</div></div>
+        </div>
+
+        <!-- Grupo texto -->
+        <div style="font-size: 11px; color: hsl(var(--foreground-subtle)); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-top: 12px;">Texto</div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--foreground)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--foreground</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 92%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--foreground-muted)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--foreground-muted</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 64%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--foreground-subtle)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--foreground-subtle</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 0% 45%</div></div>
+        </div>
+
+        <!-- Grupo semánticos -->
+        <div style="font-size: 11px; color: hsl(var(--foreground-subtle)); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-top: 12px;">Semánticos</div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--destructive)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--destructive</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">0 70% 62%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--code-inline-bg)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--code-inline-bg</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">5 30% 22%</div></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;">
+          <div style="width: 36px; height: 36px; background: hsl(var(--code-inline-fg)); border-radius: 6px;"></div>
+          <div><div style="font-family: var(--font-mono); font-size: 12px;">--code-inline-fg</div><div style="font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle));">5 70% 75%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tipografía -->
+    <div class="scene" style="padding: 32px;">
+      <h3 style="font-family: var(--font-serif); font-size: 22px; margin: 0 0 20px 0;">Tipografía</h3>
+
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 11px; color: hsl(var(--foreground-subtle)); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-bottom: 8px;">Serif · Instrument Serif</div>
+        <div style="font-family: var(--font-serif); font-size: 40px; line-height: 1.1; letter-spacing: -0.01em;">¿En qué puedo ayudarte?</div>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 11px; color: hsl(var(--foreground-subtle)); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-bottom: 8px;">Sans · Plus Jakarta Sans</div>
+        <div style="font-size: 20px; font-weight: 600; margin-bottom: 4px;">Título del chat (20px / 600)</div>
+        <div style="font-size: 16px; margin-bottom: 4px;">Contenido del mensaje (16px / 400)</div>
+        <div style="font-size: 14px; color: hsl(var(--foreground-muted)); margin-bottom: 4px;">UI item, placeholder, dropdown (14px / 400 · muted)</div>
+        <div style="font-size: 12px; color: hsl(var(--foreground-subtle));">Etiqueta pequeña, metadata (12px / 400 · subtle)</div>
+      </div>
+
+      <div>
+        <div style="font-size: 11px; color: hsl(var(--foreground-subtle)); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-bottom: 8px;">Mono · JetBrains Mono</div>
+        <div style="font-family: var(--font-mono); font-size: 14px;">const message = await stream.text();</div>
+        <div style="margin-top: 8px;">
+          <span style="font-family: var(--font-mono); font-size: 14px; background: hsl(var(--code-inline-bg)); color: hsl(var(--code-inline-fg)); padding: 2px 6px; border-radius: 4px;">inline code</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding: 40px 0 60px 0; text-align: center; font-family: var(--font-mono); font-size: 11px; color: hsl(var(--foreground-subtle)); letter-spacing: 0.05em;">
+  Claude Lite · Mockup de diseño · Fase 1 · 2026-04-16
+</footer>
+
+</div>
+
+<!-- Template de item de sidebar para rellenar con JS -->
+
+<script>
+  // Renderizar items de sidebar dinámicamente (sección 02 blank chat)
+  function sidebarItem(title, model, active = false, firstInActiveList = false) {
+    const modelColors = {
+      opus:   'hsl(var(--accent))',
+      sonnet: 'hsl(var(--foreground-muted))',
+      haiku:  'hsl(var(--foreground-subtle))'
+    };
+    const titleFirst = active ? 'hsl(var(--foreground))' : 'hsl(var(--foreground-muted))';
+    const bg = active ? 'hsl(var(--muted))' : 'transparent';
+    const weight = active ? '600' : '400';
+    return `
+      <div class="conv-item ${active ? 'is-active' : ''}" style="padding: 8px 12px; border-radius: 6px; background: ${bg}; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: background 120ms;"
+        onmouseover="if (this.style.background === 'transparent' || this.style.background === '') this.style.background = 'hsl(var(--muted-hover))'"
+        onmouseout="if (!this.classList.contains('is-active')) this.style.background = 'transparent'"
+      >
+        <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; font-weight: ${weight}; color: ${titleFirst};">${title}</span>
+        <span title="${model}" style="width: 8px; height: 8px; border-radius: 50%; background: ${modelColors[model]}; flex-shrink: 0;"></span>
+        <span class="conv-menu-trigger" style="width: 24px; height: 24px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: hsl(var(--foreground-muted));">
+          <i data-lucide="more-horizontal" style="width: 14px; height: 14px;"></i>
+        </span>
+      </div>
+    `;
+  }
+
+  // Popular sidebars
+  const items = [
+    { title: 'Dockerfile para app Next.js en fly.io', model: 'opus' },
+    { title: 'Recetas veganas para semana sin gluten', model: 'sonnet' },
+    { title: 'Ruta 3 días en Kioto, templos menos turísticos', model: 'sonnet' },
+    { title: 'Migración Drizzle: añadir columna no-null', model: 'opus' },
+    { title: 'Qué libro leer después de Piranesi', model: 'haiku' },
+    { title: 'Debugging segfault en código Rust async', model: 'opus' },
+    { title: 'Cómo marinar tempeh para que sepa a algo 😩', model: 'haiku' },
+    { title: 'Comparar bombas de calor aerotérmicas', model: 'sonnet' },
+    { title: 'Sintaxis de Prometheus histogram_quantile', model: 'haiku' },
+    { title: 'Explícame Kahneman System 1 vs System 2', model: 'sonnet' },
+    { title: 'Regex para validar IBAN español', model: 'haiku' },
+    { title: 'Regalo para cumple de mi madre (60 años, cerámica)', model: 'sonnet' },
+    { title: 'Resumen paper sobre speculative decoding', model: 'opus' },
+    { title: 'Rutina de fuerza 3 días/semana', model: 'sonnet' },
+  ];
+
+  // Blank chat (section 02): ningún activo
+  document.querySelectorAll('#s2 .conv-item').forEach((el, i) => {
+    if (items[i]) {
+      el.outerHTML = sidebarItem(items[i].title, items[i].model, false);
+    }
+  });
+
+  // Section 03: mismo listado con el primero activo
+  const list3 = document.getElementById('sidebar-active-list');
+  if (list3) {
+    list3.innerHTML = items.map((it, i) => sidebarItem(it.title, it.model, i === 0)).join('');
+  }
+
+  // Inicializar iconos lucide (después de manipular DOM)
+  lucide.createIcons();
+</script>
+
+</body>
+</html>
