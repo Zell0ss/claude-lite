@@ -5,9 +5,9 @@ import { eq, asc } from 'drizzle-orm'
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
+  const { id } = await params
   const conv = db
     .select()
     .from(conversations)
@@ -16,20 +16,21 @@ export async function GET(
 
   if (!conv) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-  const msgs = await db
+  const msgs = db
     .select()
     .from(messages)
     .where(eq(messages.conversationId, id))
     .orderBy(asc(messages.createdAt))
+    .all()
 
   return NextResponse.json({ ...conv, messages: msgs })
 }
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
+  const { id } = await params
   const body = await req.json().catch(() => null)
   if (!body) return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
 
@@ -40,6 +41,7 @@ export async function PATCH(
   db.update(conversations)
     .set(update)
     .where(eq(conversations.id, id))
+    .run()
 
   const updated = db
     .select()
@@ -53,9 +55,9 @@ export async function PATCH(
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params
-  db.delete(conversations).where(eq(conversations.id, id))
+  const { id } = await params
+  db.delete(conversations).where(eq(conversations.id, id)).run()
   return NextResponse.json({ ok: true })
 }
