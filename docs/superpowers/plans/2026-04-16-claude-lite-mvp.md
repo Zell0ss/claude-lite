@@ -11,7 +11,7 @@
 > **Runtime notes (discovered during implementation):**
 > - **Drizzle + better-sqlite3 is synchronous.** Do NOT use `await` on `.get()` or `.all()`. Mutating ops (`.insert()`, `.update()`, `.delete()`) need `.run()` to actually execute.
 > - **`params` in Next.js 16 route handlers IS a Promise.** Type as `{ params: Promise<{ id: string }> }` and use `const { id } = await params`.
-> - **AI SDK ai@6:** `toDataStreamResponse()` does not exist — use `toTextStreamResponse()`. Verify `useChat` client compatibility.
+> - **AI SDK ai@6:** `toDataStreamResponse()` does not exist. Use `toUIMessageStreamResponse()` — this is what `useChat`'s default transport (`DefaultChatTransport`) expects (JSON event stream). `toTextStreamResponse()` produces plain text and is NOT compatible with `useChat`.
 > - **React 19 event types are deprecated.** Use structural typing `(e: { preventDefault(): void })` instead of `React.FormEvent`.
 > - **Auth tests need `// @vitest-environment node`** at the top — jose's `Uint8Array` check fails in jsdom cross-realm.
 
