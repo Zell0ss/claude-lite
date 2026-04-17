@@ -1,33 +1,38 @@
-app = "claude-lite"
-primary_region = "cdg"
+# fly.toml app configuration file generated for claude-lite on 2026-04-17T07:47:53+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'claude-lite'
+primary_region = 'cdg'
 
 [build]
 
 [env]
-  DATABASE_URL = "file:/data/app.db"
-  NODE_ENV = "production"
+  DATABASE_URL = 'file:/data/app.db'
+  NODE_ENV = 'production'
 
-[mounts]
-  source      = "claude_lite_data"
-  destination = "/data"
+[[mounts]]
+  source = 'claude_lite_data'
+  destination = '/data'
 
 [http_service]
   internal_port = 3000
-  force_https   = true
-  auto_stop_machines  = "stop"
+  force_https = true
+  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
 
-[[vm]]
-  memory   = "512mb"
-  cpu_kind = "shared"
-  cpus     = 1
-
 [checks]
   [checks.health]
-    type         = "http"
-    port         = 3000
-    path         = "/api/health"
-    interval     = "10s"
-    timeout      = "5s"
-    grace_period = "30s"
+    port = 3000
+    type = 'http'
+    interval = '10s'
+    timeout = '5s'
+    grace_period = '30s'
+    path = '/api/health'
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1
