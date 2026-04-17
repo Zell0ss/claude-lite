@@ -1,6 +1,5 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import rehypeShiki from '@shikijs/rehype'
 
 interface Props {
   role: 'user' | 'assistant'
@@ -22,7 +21,6 @@ export function Message({ role, content }: Props) {
         <div className="w-full text-foreground text-base leading-relaxed prose-custom">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
-            rehypePlugins={[[rehypeShiki, { theme: 'github-dark-dimmed' }]]}
             components={{
               p: ({ children }) => (
                 <p className="mb-4 last:mb-0 leading-relaxed">{children}</p>
