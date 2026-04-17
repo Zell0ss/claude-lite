@@ -1,5 +1,7 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 interface Props {
   role: 'user' | 'assistant'
@@ -72,16 +74,26 @@ export function Message({ role, content }: Props) {
                   {children}
                 </pre>
               ),
-              code: ({ children, className }) =>
-                className ? (
-                  // Block code (inside pre, handled by shiki)
-                  <code className={className}>{children}</code>
-                ) : (
-                  // Inline code
+              code: ({ children, className }) => {
+                const language = className?.replace('language-', '')
+                if (language) {
+                  return (
+                    <SyntaxHighlighter
+                      language={language}
+                      style={oneDark}
+                      customStyle={{ borderRadius: '0.5rem', margin: '1rem 0', fontSize: '0.875rem' }}
+                      PreTag="div"
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  )
+                }
+                return (
                   <code className="bg-code-inline-bg text-code-inline-fg rounded px-1.5 py-0.5 text-[0.9em] font-mono">
                     {children}
                   </code>
-                ),
+                )
+              },
               table: ({ children }) => (
                 <div className="overflow-x-auto my-4">
                   <table className="text-sm border-collapse w-full">{children}</table>
