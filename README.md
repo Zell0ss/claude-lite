@@ -54,7 +54,7 @@ node -e '
 get the part after $2b$12$ then prepare the loaded secrets:
 ```bash                                                                                                                                                                                  
 fly launch --no-deploy                                                                                                                                                                      
-fly volumes create claude_lite_data -r mad -s 1     
+fly volumes create claude_lite_data -r cdg -s 1     
 
 fly secrets set \                                                                                                                                                                           
 ANTHROPIC_API_KEY="sk-ant-..." \
