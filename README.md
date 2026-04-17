@@ -12,6 +12,9 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
+# if you want to use with tailscale
+npm run dev -- -H 0.0.0.0
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -36,12 +39,27 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 To deploy to fly.io when you're ready:   
+first generate a hash without bars for your password:
+```bash
+node -e '
+  let b = require("bcryptjs");
+  let try_hash = async () => {
+    let h = await b.hash("YourPassword", 12);
+    if (h.includes("/")) { console.log("has slash, retrying..."); return try_hash(); }
+    console.log(h);
+  };
+  try_hash();
+  '
+```
+get the part after $2b$12$ then prepare the loaded secrets:
 ```bash                                                                                                                                                                                  
-  fly launch --no-deploy                                                                                                                                                                      
-  fly volumes create claude_lite_data -r mad -s 1                                                                                                                                             
-  fly secrets set \                                                                                                                                                                           
-    ANTHROPIC_API_KEY="sk-ant-..." \
-    AUTH_PASSWORD_HASH="$(node -e "require('bcryptjs').hash('yourpassword',12).then(h=>console.log(h))")" \                                                                                   
-    AUTH_COOKIE_SECRET="$(openssl rand -hex 32)"                                                                                                                                              
-  fly deploy    
+fly launch --no-deploy                                                                                                                                                                      
+fly volumes create claude_lite_data -r mad -s 1     
+
+fly secrets set \                                                                                                                                                                           
+ANTHROPIC_API_KEY="sk-ant-..." \
+AUTH_PASSWORD_HASH="<your hash without the $2b$12$>" \                                                                                   
+AUTH_COOKIE_SECRET="$(openssl rand -hex 32)"  
+
+fly deploy    
 ```
